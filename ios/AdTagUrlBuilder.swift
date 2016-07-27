@@ -14,7 +14,6 @@ protocol AdTagUrlBuilderDelegate: class {
 
 class AdTagUrlBuilder {
   
-//  var result: String?
   weak var delegate: AdTagUrlBuilderDelegate?
     
   var adUnitId: String? {
