@@ -12,6 +12,7 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
   
   private var videoPlayerController: VideoPlayerWithAdPlaybackController?
   private var eventDispatcher: RCTEventDispatcher?
+  private var adTagUrlBuilder: AdTagUrlBuilder = AdTagUrlBuilder()
   
   private var _src: String?
   private var _adTagUrl: String?
@@ -23,17 +24,6 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
   private var _targetParams: [String : AnyObject]?
   private var _adTestNameValuePair: [String : AnyObject]?
   private var _contentLaunchAdParams: [String : AnyObject]?
-  
-  private let kCharEquals = "="
-  private let kCharAnd = "&"
-  private let kSize = "1x7"
-  private let kAdUnitIdLive = "/video/live"
-  private let kAdUnitIdVideo = "/video/vod"
-  private let kDefaultAdUnitId = "/5262/app/bloomberg"
-  private let kAdParamSegment = "ksg"
-  private let kAdTargetQueryParamCustParams = "cust_params"
-  private let kAdUrlBase = "http://pubads.g.doubleclick.net/gampad/ads"
-  private let kAdUrlConstParams = "&impl=s&gdfp_req=1&env=vp&output=xml_vast3&unviewed_position_start=1"
   
   func initWithEventDispatcher(eventDispatcher: RCTEventDispatcher) -> UIView {
     self.eventDispatcher = eventDispatcher
@@ -65,87 +55,52 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
   
   func setAdUnitId(adUnitId: String) {
     _adUnitId = adUnitId
-    updateAdTagUrl()
+    adTagUrlBuilder.adUnitId = adUnitId
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setDefaultAdUnitId(defaultAdUnitId: String) {
     _defaultAdUnitId = defaultAdUnitId
-    updateAdTagUrl()
+    adTagUrlBuilder.defaultAdUnitId = defaultAdUnitId
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setLive(live: Bool) {
     _live = live
-    updateAdTagUrl()
+    adTagUrlBuilder.live = live
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setShowname(showname: String) {
     _showname = showname
-    updateAdTagUrl()
+    adTagUrlBuilder.showname = showname
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setSegment(segment: String) {
     _segment = segment
-    updateAdTagUrl()
+    adTagUrlBuilder.segment = segment
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setTargetParams(targetParams: [String : AnyObject]) {
     _targetParams = targetParams
-    updateAdTagUrl()
+    adTagUrlBuilder.targetParams = targetParams
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setAdTestNameValuePair(adTestNameValuePair: [String : AnyObject]) {
     _adTestNameValuePair = adTestNameValuePair
-    updateAdTagUrl()
+    adTagUrlBuilder.adTestNameValuePair = adTestNameValuePair
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setContentLaunchAdParams(contentLaunchAdParams: [String : AnyObject]) {
     _contentLaunchAdParams = contentLaunchAdParams
-    updateAdTagUrl()
+    adTagUrlBuilder.contentLaunchAdParams = contentLaunchAdParams
+    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
-  
-// MARK: - AdTagUrl construction
-  
-  private func updateAdTagUrl() {
-    _adTagUrl = generateAdTagUrl()
-    self.videoPlayerController!.adTagUrl = _adTagUrl
-  }
-  
-  private func generateAdTagUrl() -> String {
-    var urlTemplate = ""
     
-    if let defaultAdUnitId = _defaultAdUnitId, adUnitId = _adUnitId, live = _live, showname = _showname {
-      var iu = defaultAdUnitId.isEmpty ? kDefaultAdUnitId : defaultAdUnitId
-      if (adUnitId.isEmpty) {
-        iu = iu + (live ? kAdUnitIdLive : kAdUnitIdVideo + showname)
-      } else {
-        iu = adUnitId
-      }
-      let timestamp = Int64(NSDate().timeIntervalSince1970 * 1000.0)
-      urlTemplate = "\(kAdUrlBase)?sz=\(kSize)&iu=\(iu)\(kAdUrlConstParams)&correlator=\(timestamp)&"
-    }
-    
-    var custParams = ""
-    custParams = custParams.concatWithParams(_targetParams)
-    
-    if let segment = _segment {
-      if (!segment.isEmpty) {
-        custParams = custParams + kAdParamSegment + kCharEquals + segment + kCharAnd
-      }
-    }
-    
-    custParams = custParams.concatWithParams(_contentLaunchAdParams)
-    custParams = custParams.concatWithParams(_adTestNameValuePair)
-    
-    if (custParams.length() > 0) {
-      let custParamsUTF8Encoded = custParams.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
-      if let custParamsUTF8Encoded = custParamsUTF8Encoded {
-        urlTemplate = urlTemplate + kAdTargetQueryParamCustParams + kCharEquals + custParamsUTF8Encoded + kCharAnd
-      }
-    }
-    
-    return urlTemplate
-  }
-  
 // MARK: - VideoPlayerWithAdPlayback delegate
   
   private func dispatchToRN(event: String, params: [String : AnyObject]?) {
@@ -194,26 +149,6 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
   
   func resume() {
     self.videoPlayerController!.resume()
-  }
-  
-}
-
-extension String {
-  
-  mutating func concatWithParams(params:Dictionary<String, AnyObject>?) -> String {
-    guard let params = params else {
-      return self
-    }
-    
-    for (key, value) in params {
-      self = self + key + "=" + (value as! String) + "&"
-    }
-    
-    return self
-  }
-  
-  func length() -> Int {
-    return characters.count
   }
   
 }
