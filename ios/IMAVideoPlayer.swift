@@ -8,7 +8,7 @@
 
 import Foundation
 
-class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
+class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate {
   
   private var videoPlayerController: VideoPlayerWithAdPlaybackController?
   private var eventDispatcher: RCTEventDispatcher?
@@ -33,6 +33,8 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
     self.videoPlayerController = VideoPlayerWithAdPlaybackController(adContainer: adContainer)
     self.videoPlayerController?.delegate = self
     
+    self.adTagUrlBuilder.delegate = self
+    
     return self
   }
   
@@ -56,49 +58,47 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
   func setAdUnitId(adUnitId: String) {
     _adUnitId = adUnitId
     adTagUrlBuilder.adUnitId = adUnitId
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setDefaultAdUnitId(defaultAdUnitId: String) {
     _defaultAdUnitId = defaultAdUnitId
     adTagUrlBuilder.defaultAdUnitId = defaultAdUnitId
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setLive(live: Bool) {
     _live = live
     adTagUrlBuilder.live = live
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setShowname(showname: String) {
     _showname = showname
     adTagUrlBuilder.showname = showname
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setSegment(segment: String) {
     _segment = segment
     adTagUrlBuilder.segment = segment
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setTargetParams(targetParams: [String : AnyObject]) {
     _targetParams = targetParams
     adTagUrlBuilder.targetParams = targetParams
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setAdTestNameValuePair(adTestNameValuePair: [String : AnyObject]) {
     _adTestNameValuePair = adTestNameValuePair
     adTagUrlBuilder.adTestNameValuePair = adTestNameValuePair
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
   }
   
   func setContentLaunchAdParams(contentLaunchAdParams: [String : AnyObject]) {
     _contentLaunchAdParams = contentLaunchAdParams
     adTagUrlBuilder.contentLaunchAdParams = contentLaunchAdParams
-    self.videoPlayerController!.adTagUrl = adTagUrlBuilder.result
+  }
+  
+// MARK: - AdTagUrlBuilder delegate
+  
+  func adTagBuilder(adTagBuilder: AdTagUrlBuilder, didConstructAdTagUrl adTagUrl: String) {
+    self.videoPlayerController!.adTagUrl = adTagUrl
   }
     
 // MARK: - VideoPlayerWithAdPlayback delegate

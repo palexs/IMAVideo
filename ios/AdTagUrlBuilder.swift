@@ -8,9 +8,14 @@
 
 import Foundation
 
+protocol AdTagUrlBuilderDelegate: class {
+  func adTagBuilder(adTagBuilder: AdTagUrlBuilder, didConstructAdTagUrl adTagUrl: String)
+}
+
 class AdTagUrlBuilder {
   
-  var result: String?
+//  var result: String?
+  weak var delegate: AdTagUrlBuilderDelegate?
     
   var adUnitId: String? {
     didSet {
@@ -65,7 +70,8 @@ class AdTagUrlBuilder {
   private let kAdUrlConstParams = "&impl=s&gdfp_req=1&env=vp&output=xml_vast3&unviewed_position_start=1"
   
   private func updateAdTagUrl() {
-    result = generateAdTagUrl()
+    let result = generateAdTagUrl()
+    delegate?.adTagBuilder(self, didConstructAdTagUrl: result)
   }
 
   private func generateAdTagUrl() -> String {
