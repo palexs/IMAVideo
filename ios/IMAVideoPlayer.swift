@@ -8,7 +8,13 @@
 
 import Foundation
 
-class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate {
+protocol IMAPlayer: class {
+  func play()
+  func pause()
+  func resume()
+}
+
+class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate, IMAPlayer {
   
   private var videoPlayerController: VideoPlayerWithAdPlaybackController?
   private var eventDispatcher: RCTEventDispatcher?
@@ -137,7 +143,7 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate
     dispatchToRN(Callback.onPrerollsFinished, params: nil)
   }
   
-// MARK: -
+// MARK: - IMAPlayer
   
   func play() {
     self.videoPlayerController!.play()

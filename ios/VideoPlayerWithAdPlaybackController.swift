@@ -20,7 +20,7 @@ protocol VideoPlayerWithAdPlayback: class {
   func onPrerollsFinished()
 }
 
-class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAdsManagerDelegate {
+class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAdsManagerDelegate, IMAPlayer {
   
   private var contentPlayer: AVPlayer?
   private var playerLayer: AVPlayerLayer?
@@ -150,7 +150,7 @@ class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAd
     contentPlayer?.play()
   }
   
-// MARK: -
+// MARK: - IMAPlayer
   
   func play() {
     requestAds()
