@@ -8,16 +8,16 @@ import {
 
 import IMAVideo from './IMAVideo';
 
-const CHAR_EQUALS = "="
-const CHAR_AND = "&"
-const SIZE = "1x7"
-const AD_UNIT_ID_LIVE = "/video/live"
-const AD_UNIT_ID_VIDEO = "/video/vod"
-const DEFAULT_AD_UNIT_ID = "/5262/app/bloomberg"
-const AD_PARAM_SEGMENT = "ksg"
-const AD_TARGET_QUERY_PARAM_CUST_PARAMS = "cust_params"
-const AD_URL_BASE = "http://pubads.g.doubleclick.net/gampad/ads"
-const AD_URL_CONST_PARAMS = "&impl=s&gdfp_req=1&env=vp&output=xml_vast3&unviewed_position_start=1"
+const CHAR_EQUALS = '=';
+const CHAR_AND = '&';
+const SIZE = '1x7';
+const AD_UNIT_ID_LIVE = '/video/live';
+const AD_UNIT_ID_VIDEO = '/video/vod';
+const DEFAULT_AD_UNIT_ID = '/5262/app/bloomberg';
+const AD_PARAM_SEGMENT = 'ksg';
+const AD_TARGET_QUERY_PARAM_CUST_PARAMS = 'cust_params';
+const AD_URL_BASE = 'http://pubads.g.doubleclick.net/gampad/ads';
+const AD_URL_CONST_PARAMS = '&impl=s&gdfp_req=1&env=vp&output=xml_vast3&unviewed_position_start=1';
 
 class IMAVideoPlayer extends Component {
 
@@ -55,64 +55,67 @@ class IMAVideoPlayer extends Component {
   // }
 
   generateAdTagUrl() {
-    var urlTemplate = ""
-    var iu = this.state.defaultAdUnitId ? this.state.defaultAdUnitId : DEFAULT_AD_UNIT_ID
+    let custParams = '';
+    let iu = this.state.defaultAdUnitId ? this.state.defaultAdUnitId : DEFAULT_AD_UNIT_ID;
     if (!this.state.adUnitId) {
-      iu = iu + (this.state.live ? AD_UNIT_ID_LIVE : AD_UNIT_ID_VIDEO + this.state.showname)
+      iu = iu + (this.state.live ? AD_UNIT_ID_LIVE : AD_UNIT_ID_VIDEO + this.state.showname);
     } else {
-      iu = this.state.adUnitId
+      iu = this.state.adUnitId;
     }
 
     const timestamp = new Date().getTime(); // number of milliseconds since 1970/01/01
-    urlTemplate = `${AD_URL_BASE}?sz=${SIZE}&iu=${iu}${AD_URL_CONST_PARAMS}&correlator=${timestamp}${CHAR_AND}`
+    let urlTemplate = `${AD_URL_BASE}?sz=${SIZE}&iu=${iu}
+      ${AD_URL_CONST_PARAMS}&correlator=${timestamp}${CHAR_AND}`;
 
-    var custParams = ""
-    custParams = this.concatStringWithParams(custParams, this.state.targetParams)
-
+    custParams = this.concatStringWithParams(custParams, this.state.targetParams);
     if (this.state.segment) {
-      custParams = custParams + AD_PARAM_SEGMENT + CHAR_EQUALS + this.state.segment + CHAR_AND
+      custParams = custParams + AD_PARAM_SEGMENT + CHAR_EQUALS + this.state.segment + CHAR_AND;
     }
 
-    custParams = this.concatStringWithParams(custParams, this.state.contentLaunchAdParams)
-    custParams = this.concatStringWithParams(custParams, this.state.adTestNameValuePair)
+    custParams = this.concatStringWithParams(custParams, this.state.contentLaunchAdParams);
+    custParams = this.concatStringWithParams(custParams, this.state.adTestNameValuePair);
 
     if (custParams.length > 0) {
-      const custParamsUTF8Encoded = unescape(encodeURIComponent(custParams))
-      urlTemplate = urlTemplate + AD_TARGET_QUERY_PARAM_CUST_PARAMS + CHAR_EQUALS + custParamsUTF8Encoded + CHAR_AND
+      const custParamsUTF8Encoded = unescape(encodeURIComponent(custParams));
+      urlTemplate = urlTemplate + AD_TARGET_QUERY_PARAM_CUST_PARAMS +
+      CHAR_EQUALS + custParamsUTF8Encoded + CHAR_AND;
     }
 
-    return urlTemplate
+    return urlTemplate;
   }
 
   concatStringWithParams(str, params) {
-    var result = ""
+    let result = '';
     if (!params) {
-      return this
+      return this;
     }
 
-    for(var key in params) {
-      var value = params[key]
-      result = `${str}${key}=${value}&`
+    for (const key of Object.keys(params)) {
+      const value = params[key];
+      console.log('KEY: ' + key + ' VALUE: ' + value);
+      result = `${str}${key}=${value}&`;
     }
 
-    return result
+    return result;
   }
 
   render() {
     return (
-        <IMAVideo src = {this.state.src}
-        adTagUrl = {this.state.adTagUrl ? this.state.adTagUrl : this.generateAdTagUrl()}
-        onPlay = {this.state.onPlay}
-        onPause = {this.state.onPause}
-        onLoadAd = {this.state.onLoadAd}
-        onLoadVideo = {this.state.onLoadVideo}
-        onStartLoadAd = {this.state.onStartLoadAd}
-        onStartLoadVideo = {this.state.onStartLoadVideo}
-        onResume = {this.state.onResume}
-        onComplete = {this.state.onComplete}
-        onError = {this.state.onError}
-        onPrerollsFinished = {this.state.onPrerollsFinished}
-        style = {this.state.style}/>
+      <IMAVideo
+        src={this.state.src}
+        adTagUrl={this.state.adTagUrl ? this.state.adTagUrl : this.generateAdTagUrl()}
+        onPlay={this.state.onPlay}
+        onPause={this.state.onPause}
+        onLoadAd={this.state.onLoadAd}
+        onLoadVideo={this.state.onLoadVideo}
+        onStartLoadAd={this.state.onStartLoadAd}
+        onStartLoadVideo={this.state.onStartLoadVideo}
+        onResume={this.state.onResume}
+        onComplete={this.state.onComplete}
+        onError={this.state.onError}
+        onPrerollsFinished={this.state.onPrerollsFinished}
+        style={this.state.style}
+      />
     );
   }
 }
