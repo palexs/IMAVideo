@@ -58,7 +58,7 @@ class IMAVideoPlayer extends Component {
     let custParams = '';
     let iu = this.state.defaultAdUnitId ? this.state.defaultAdUnitId : DEFAULT_AD_UNIT_ID;
     if (!this.state.adUnitId) {
-      iu = iu + (this.state.live ? AD_UNIT_ID_LIVE : AD_UNIT_ID_VIDEO + this.state.showname);
+      iu += (this.state.live ? AD_UNIT_ID_LIVE : AD_UNIT_ID_VIDEO + this.state.showname);
     } else {
       iu = this.state.adUnitId;
     }
@@ -92,7 +92,6 @@ class IMAVideoPlayer extends Component {
 
     for (const key of Object.keys(params)) {
       const value = params[key];
-      console.log('KEY: ' + key + ' VALUE: ' + value);
       result = `${str}${key}=${value}&`;
     }
 
