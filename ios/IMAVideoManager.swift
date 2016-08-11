@@ -1,9 +1,9 @@
 //
 //  IMAVideoManager.swift
-//  video2
+//  Pods
 //
-//  Created by Alexander Perepelitsyn on 7/27/16.
-//  Copyright © 2016 Facebook. All rights reserved.
+//  Created by Alexander Perepelitsyn on 7/28/16.
+//
 //
 
 import Foundation
@@ -11,10 +11,15 @@ import Foundation
 struct Callback {
   static let onPlay = "onPlay"
   static let onPause = "onPause"
+  static let onLoadAd = "onLoadAd"
+  static let onLoadVideo = "onLoadVideo"
+  static let onStartLoadAd = "onStartLoadAd"
+  static let onStartLoadVideo = "onStartLoadVideo"
   static let onResume = "onResume"
   static let onComplete = "onComplete"
   static let onError = "onError"
   static let onPrerollsFinished = "onPrerollsFinished"
+  static let onProgress = "onProgress"
 }
 
 @objc(IMAVideoManager)
@@ -24,40 +29,22 @@ class IMAVideoManager : RCTViewManager {
     return IMAVideoPlayer().initWithEventDispatcher(self.bridge.eventDispatcher());
   }
   
-// MARK: - Callbacks exposed to React Native
+  // MARK: - Callbacks exposed to React Native
   
   override func customDirectEventTypes() -> [String]! {
     return [
       Callback.onPlay,
       Callback.onPause,
+      Callback.onLoadAd,
+      Callback.onLoadVideo,
+      Callback.onStartLoadAd,
+      Callback.onStartLoadVideo,
       Callback.onResume,
       Callback.onComplete,
       Callback.onError,
-      Callback.onPrerollsFinished
+      Callback.onPrerollsFinished,
+      Callback.onProgress
     ];
-  }
-  
-// MARK: - Commands received from React Native
-  
-  @objc func play(reactTag: NSNumber) {
-    self.bridge.uiManager.addUIBlock { (uiManager: RCTUIManager!, viewRegistry:[NSNumber : UIView]!) in
-      let player: IMAVideoPlayer = viewRegistry[reactTag] as! IMAVideoPlayer;
-      player.play();
-    }
-  }
-  
-  @objc func pause(reactTag: NSNumber) {
-    self.bridge.uiManager.addUIBlock { (uiManager: RCTUIManager!, viewRegistry:[NSNumber : UIView]!) in
-      let player: IMAVideoPlayer = viewRegistry[reactTag] as! IMAVideoPlayer;
-      player.pause();
-    }
-  }
-  
-  @objc func resume(reactTag: NSNumber) {
-    self.bridge.uiManager.addUIBlock { (uiManager: RCTUIManager!, viewRegistry:[NSNumber : UIView]!) in
-      let player: IMAVideoPlayer = viewRegistry[reactTag] as! IMAVideoPlayer;
-      player.resume();
-    }
   }
   
 }

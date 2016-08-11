@@ -23,7 +23,7 @@ class IMAVideoPlayer extends Component {
 
   static propTypes = {
     ...View.propTypes,
-    src: PropTypes.string,
+    src: PropTypes.string.isRequired,
     adTagUrl: PropTypes.string,
     adUnitId: PropTypes.string,
     defaultAdUnitId: PropTypes.string,
@@ -33,6 +33,9 @@ class IMAVideoPlayer extends Component {
     targetParams: PropTypes.object,
     adTestNameValuePair: PropTypes.object,
     contentLaunchAdParams: PropTypes.object,
+    paused: PropTypes.bool.isRequired,
+    skipAds: PropTypes.bool.isRequired,
+    restart: PropTypes.bool.isRequired,
     onPlay: PropTypes.func,
     onPause: PropTypes.func,
     onLoadAd: PropTypes.func,
@@ -43,6 +46,7 @@ class IMAVideoPlayer extends Component {
     onComplete: PropTypes.func,
     onError: PropTypes.func,
     onPrerollsFinished: PropTypes.func,
+    onProgress: PropTypes.func,
   };
 
   constructor(props) {
@@ -50,9 +54,9 @@ class IMAVideoPlayer extends Component {
     this.state = props;
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState(nextProps);
-  // }
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps);
+  }
 
   generateAdTagUrl() {
     let custParams = '';
@@ -76,7 +80,7 @@ class IMAVideoPlayer extends Component {
     custParams = this.concatStringWithParams(custParams, this.state.adTestNameValuePair);
 
     if (custParams.length > 0) {
-      const custParamsUTF8Encoded = unescape(encodeURIComponent(custParams));
+      const custParamsUTF8Encoded = encodeURIComponent(custParams);
       urlTemplate = urlTemplate + AD_TARGET_QUERY_PARAM_CUST_PARAMS +
       CHAR_EQUALS + custParamsUTF8Encoded + CHAR_AND;
     }
@@ -99,10 +103,17 @@ class IMAVideoPlayer extends Component {
   }
 
   render() {
+    let params = {
+      src: this.state.src,
+      adTagUrl: this.state.adTagUrl ? this.state.adTagUrl : this.generateAdTagUrl(),
+      paused: this.state.paused,
+      skipAds: this.state.skipAds,
+      restart: this.state.restart,
+    };
+
     return (
       <IMAVideo
-        src={this.state.src}
-        adTagUrl={this.state.adTagUrl ? this.state.adTagUrl : this.generateAdTagUrl()}
+        params={params}
         onPlay={this.state.onPlay}
         onPause={this.state.onPause}
         onLoadAd={this.state.onLoadAd}
@@ -111,6 +122,7 @@ class IMAVideoPlayer extends Component {
         onStartLoadVideo={this.state.onStartLoadVideo}
         onResume={this.state.onResume}
         onComplete={this.state.onComplete}
+        onProgress={this.state.onProgress}
         onError={this.state.onError}
         onPrerollsFinished={this.state.onPrerollsFinished}
         style={this.state.style}

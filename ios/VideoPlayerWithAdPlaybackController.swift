@@ -1,12 +1,13 @@
 //
-//  VideoPlayerWithAdPlayback.swift
-//  video2
+//  VideoPlayerWithAdPlaybackController.swift
+//  Pods
 //
-//  Created by Alexander Perepelitsyn on 7/27/16.
-//  Copyright © 2016 Facebook. All rights reserved.
+//  Created by Alexander Perepelitsyn on 7/28/16.
+//
 //
 
 import Foundation
+
 import AVFoundation
 import GoogleInteractiveMediaAds
 import UIKit
@@ -14,10 +15,20 @@ import UIKit
 protocol VideoPlayerWithAdPlayback: class {
   func onPlay()
   func onPause()
+  func onLoadAd()
+  func onLoadVideo()
+  func onStartLoadAd()
+  func onStartLoadVideo()
   func onResume()
   func onComplete()
   func onError()
   func onPrerollsFinished()
+}
+
+protocol IMAPlayer: class {
+  func play()
+  func pause()
+  func resume()
 }
 
 class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAdsManagerDelegate, IMAPlayer {
@@ -29,7 +40,12 @@ class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAd
   private var adsManager: IMAAdsManager!
   
   var adContainer: UIView!
+  var src: String?
   var adTagUrl: String?
+  var paused: Bool?
+  var skipAds: Bool?
+  var restart: Bool?
+  
   weak var delegate: VideoPlayerWithAdPlayback?
   
   init(adContainer: UIView) {
@@ -40,6 +56,7 @@ class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAd
   }
   
   func setUpContentPlayerWithContentUrl(contentUrl: String) {
+    src = contentUrl;
     // Load AVPlayer with path to content.
     guard let contentURL = NSURL(string: contentUrl) else {
       print("ERROR: please use a valid URL for the content URL")
@@ -91,6 +108,7 @@ class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAd
       userContext: nil)
     
     adsLoader.requestAdsWithRequest(request)
+    delegate?.onStartLoadAd()
   }
   
   // MARK: - IMAAdsLoaderDelegate
@@ -118,6 +136,7 @@ class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAd
   func adsManager(adsManager: IMAAdsManager!, didReceiveAdEvent event: IMAAdEvent!) {
     if event.type == IMAAdEventType.LOADED {
       // When the SDK notifies us that ads have been loaded, play them.
+      delegate?.onLoadAd()
       adsManager.start()
     } else if event.type == IMAAdEventType.STARTED {
       delegate?.onPlay()
@@ -150,11 +169,11 @@ class VideoPlayerWithAdPlaybackController: NSObject, IMAAdsLoaderDelegate, IMAAd
     contentPlayer?.play()
   }
   
-// MARK: - IMAPlayer
+  // MARK: - IMAPlayer
   
   func play() {
     requestAds()
-//    contentPlayer?.play()
+    //    contentPlayer?.play()
   }
   
   func pause() {

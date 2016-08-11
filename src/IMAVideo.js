@@ -7,16 +7,7 @@ import {
 const iface = {
   name: 'IMAVideo',
   propTypes: {
-    src: PropTypes.string,
-    adTagUrl: PropTypes.string,
-    adUnitId: PropTypes.string,
-    defaultAdUnitId: PropTypes.string,
-    live: PropTypes.bool,
-    showname: PropTypes.string,
-    segment: PropTypes.string,
-    targetParams: PropTypes.object,
-    adTestNameValuePair: PropTypes.object,
-    contentLaunchAdParams: PropTypes.object,
+    params: PropTypes.object,
     onPlay: PropTypes.func,
     onPause: PropTypes.func,
     onLoadAd: PropTypes.func,
@@ -27,6 +18,7 @@ const iface = {
     onComplete: PropTypes.func,
     onError: PropTypes.func,
     onPrerollsFinished: PropTypes.func,
+    onProgress: PropTypes.func,
     ...View.propTypes,
   },
 };

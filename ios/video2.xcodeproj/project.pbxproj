@@ -17,7 +17,6 @@
 		0407E75B1D4913AC00629EA2 /* IMAVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0407E75A1D4913AC00629EA2 /* IMAVideoPlayer.swift */; };
 		0407E75D1D4913FF00629EA2 /* IMAVideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0407E75C1D4913FE00629EA2 /* IMAVideoManager.swift */; };
 		0407E75F1D49144400629EA2 /* IMAVideoModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407E75E1D49144400629EA2 /* IMAVideoModule.m */; };
-		0407E7801D496C1A00629EA2 /* AdTagUrlBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0407E77F1D496C1A00629EA2 /* AdTagUrlBuilder.swift */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -127,7 +126,6 @@
 		0407E75C1D4913FE00629EA2 /* IMAVideoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMAVideoManager.swift; sourceTree = "<group>"; };
 		0407E75E1D49144400629EA2 /* IMAVideoModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMAVideoModule.m; sourceTree = "<group>"; };
 		0407E7601D49145900629EA2 /* IMAVideoModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMAVideoModule.h; sourceTree = "<group>"; };
-		0407E77F1D496C1A00629EA2 /* AdTagUrlBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdTagUrlBuilder.swift; sourceTree = "<group>"; };
 		0FAE40577AF1A9F5AFA240A0 /* Pods-video2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-video2.release.xcconfig"; path = "Pods/Target Support Files/Pods-video2/Pods-video2.release.xcconfig"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
@@ -271,7 +269,6 @@
 				0407E75C1D4913FE00629EA2 /* IMAVideoManager.swift */,
 				0407E75E1D49144400629EA2 /* IMAVideoModule.m */,
 				0407E7601D49145900629EA2 /* IMAVideoModule.h */,
-				0407E77F1D496C1A00629EA2 /* AdTagUrlBuilder.swift */,
 				0407E74D1D49137800629EA2 /* video2-Bridging-Header.h */,
 			);
 			name = video2;
@@ -638,7 +635,6 @@
 			files = (
 				0407E74F1D49137900629EA2 /* VideoPlayerWithAdPlaybackController.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				0407E7801D496C1A00629EA2 /* AdTagUrlBuilder.swift in Sources */,
 				0407E75B1D4913AC00629EA2 /* IMAVideoPlayer.swift in Sources */,
 				0407E75F1D49144400629EA2 /* IMAVideoModule.m in Sources */,
 				0407E75D1D4913FF00629EA2 /* IMAVideoManager.swift in Sources */,

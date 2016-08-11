@@ -1,45 +1,27 @@
 //
 //  IMAVideoPlayer.swift
-//  video2
+//  Pods
 //
-//  Created by Alexander Perepelitsyn on 7/27/16.
-//  Copyright © 2016 Facebook. All rights reserved.
+//  Created by Alexander Perepelitsyn on 7/28/16.
+//
 //
 
 import Foundation
 
-protocol IMAPlayer: class {
-  func play()
-  func pause()
-  func resume()
-}
-
-class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate, IMAPlayer {
+class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback {
   
   private var videoPlayerController: VideoPlayerWithAdPlaybackController?
   private var eventDispatcher: RCTEventDispatcher?
-  private var adTagUrlBuilder: AdTagUrlBuilder = AdTagUrlBuilder()
   
-  private var _src: String?
-  private var _adTagUrl: String?
-  private var _adUnitId: String?
-  private var _defaultAdUnitId: String?
-  private var _live: Bool?
-  private var _showname: String?
-  private var _segment: String?
-  private var _targetParams: [String : AnyObject]?
-  private var _adTestNameValuePair: [String : AnyObject]?
-  private var _contentLaunchAdParams: [String : AnyObject]?
+  private var _params: [String : AnyObject]?
   
   func initWithEventDispatcher(eventDispatcher: RCTEventDispatcher) -> UIView {
     self.eventDispatcher = eventDispatcher
     let adContainer = UIView()
     self.addSubview(adContainer)
-
+    
     self.videoPlayerController = VideoPlayerWithAdPlaybackController(adContainer: adContainer)
     self.videoPlayerController?.delegate = self
-    
-    self.adTagUrlBuilder.delegate = self
     
     return self
   }
@@ -49,65 +31,33 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate
     self.videoPlayerController!.addPlayerLayerWithBounds(self.bounds)
   }
   
-// MARK: - Props
+  // MARK: - Props
   
-  func setSrc(src: String) {
-    _src = src
-    self.videoPlayerController!.setUpContentPlayerWithContentUrl(src)
-  }
-  
-  func setAdTagUrl(adTagUrl: String) {
-    _adTagUrl = adTagUrl
-    self.videoPlayerController!.adTagUrl = adTagUrl
-  }
-  
-  func setAdUnitId(adUnitId: String) {
-    _adUnitId = adUnitId
-    adTagUrlBuilder.adUnitId = adUnitId
-  }
-  
-  func setDefaultAdUnitId(defaultAdUnitId: String) {
-    _defaultAdUnitId = defaultAdUnitId
-    adTagUrlBuilder.defaultAdUnitId = defaultAdUnitId
-  }
-  
-  func setLive(live: Bool) {
-    _live = live
-    adTagUrlBuilder.live = live
-  }
-  
-  func setShowname(showname: String) {
-    _showname = showname
-    adTagUrlBuilder.showname = showname
-  }
-  
-  func setSegment(segment: String) {
-    _segment = segment
-    adTagUrlBuilder.segment = segment
-  }
-  
-  func setTargetParams(targetParams: [String : AnyObject]) {
-    _targetParams = targetParams
-    adTagUrlBuilder.targetParams = targetParams
-  }
-  
-  func setAdTestNameValuePair(adTestNameValuePair: [String : AnyObject]) {
-    _adTestNameValuePair = adTestNameValuePair
-    adTagUrlBuilder.adTestNameValuePair = adTestNameValuePair
-  }
-  
-  func setContentLaunchAdParams(contentLaunchAdParams: [String : AnyObject]) {
-    _contentLaunchAdParams = contentLaunchAdParams
-    adTagUrlBuilder.contentLaunchAdParams = contentLaunchAdParams
-  }
-  
-// MARK: - AdTagUrlBuilder delegate
-  
-  func adTagBuilder(adTagBuilder: AdTagUrlBuilder, didConstructAdTagUrl adTagUrl: String) {
-    self.videoPlayerController!.adTagUrl = adTagUrl
-  }
+  func setParams(params: [String : AnyObject]) {
+    _params = params;
     
-// MARK: - VideoPlayerWithAdPlayback delegate
+    if let src = params["src"] as? String {
+      self.videoPlayerController!.setUpContentPlayerWithContentUrl(src)
+    }
+    
+    if let adTagUrl = params["adTagUrl"] as? String {
+      self.videoPlayerController!.adTagUrl = adTagUrl
+    }
+    
+    if let paused = params["paused"] as? Bool {
+      paused ? self.videoPlayerController!.pause() : self.videoPlayerController!.play();
+    }
+    
+    if let skipAds = params["skipAds"] as? Bool {
+      self.videoPlayerController!.skipAds = skipAds
+    }
+    
+    if let restart = params["restart"] as? Bool {
+      self.videoPlayerController!.restart = restart
+    }
+  }
+  
+  // MARK: - VideoPlayerWithAdPlayback delegate
   
   private func dispatchToRN(event: String, params: [String : AnyObject]?) {
     var mParams: [String : AnyObject] = [:]
@@ -127,6 +77,22 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate
     dispatchToRN(Callback.onPause, params: nil)
   }
   
+  func onLoadAd() {
+    dispatchToRN(Callback.onLoadAd, params: nil)
+  }
+  
+  func onLoadVideo() {
+    dispatchToRN(Callback.onLoadVideo, params: nil)
+  }
+  
+  func onStartLoadAd() {
+    dispatchToRN(Callback.onStartLoadAd, params: nil)
+  }
+  
+  func onStartLoadVideo() {
+    dispatchToRN(Callback.onStartLoadVideo, params: nil)
+  }
+  
   func onResume() {
     dispatchToRN(Callback.onResume, params: nil)
   }
@@ -143,18 +109,8 @@ class IMAVideoPlayer: UIView, VideoPlayerWithAdPlayback, AdTagUrlBuilderDelegate
     dispatchToRN(Callback.onPrerollsFinished, params: nil)
   }
   
-// MARK: - IMAPlayer
-  
-  func play() {
-    self.videoPlayerController!.play()
-  }
-  
-  func pause() {
-    self.videoPlayerController!.pause()
-  }
-  
-  func resume() {
-    self.videoPlayerController!.resume()
+  func onProgress() {
+    dispatchToRN(Callback.onProgress, params: nil)
   }
   
 }
